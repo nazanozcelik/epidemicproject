@@ -3,6 +3,7 @@ package com.example.linkconverter.service;
 import com.example.linkconverter.exception.ResourceNotFoundException;
 import com.example.linkconverter.exception.SectionNotFoundException;
 import com.example.linkconverter.model.dto.DeeplinkDto;
+import com.example.linkconverter.model.dto.WebUrlDto;
 import com.example.linkconverter.service.page.PageRouter;
 import com.example.linkconverter.util.LinkType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.net.URISyntaxException;
 public class LinkBuilder {
 
     @Autowired
-    PageRouter pageRouter;
+    public PageRouter pageRouter;
 
     @Autowired
     public LinkBuilder(PageRouter pageRouter) {
@@ -25,6 +26,12 @@ public class LinkBuilder {
         DeeplinkDto deeplinkDto = new DeeplinkDto();
         deeplinkDto.setDeeplink(pageRouter.routePage(url, LinkType.WEBURL_TO_DEEPLINK));
         return deeplinkDto;
+    }
+
+    public WebUrlDto createWebUrl(String url) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
+        WebUrlDto webUrlDto = new WebUrlDto();
+        webUrlDto.setWebURL(pageRouter.routePage(url, LinkType.DEEPLINK_TO_WEBURL));
+        return webUrlDto;
     }
 }
 

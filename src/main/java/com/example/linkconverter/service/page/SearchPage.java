@@ -22,14 +22,17 @@ public class SearchPage extends PageParser {
     private LinkRepository linkRepository;
 
     @Override
-    String parseURI(String uri, LinkType linkType) throws ResourceNotFoundException {
+    public String parseURI(String uri, LinkType linkType) throws ResourceNotFoundException {
         if (linkType == LinkType.WEBURL_TO_DEEPLINK) {
-            return webUrlToDeeplink(uri);
+            return convertWebUrlToDeeplink(uri);
+        } else if (linkType == LinkType.DEEPLINK_TO_WEBURL) {
+            return convertDeeplinkToWebUrl(uri);
+        } else {
+            return "shortlink";
         }
-        return null;
     }
 
-    private String webUrlToDeeplink(String uri) throws ResourceNotFoundException {
+    private String convertWebUrlToDeeplink(String uri) throws ResourceNotFoundException {
         String deeplink;
         Links links = new Links();
 
@@ -55,5 +58,33 @@ public class SearchPage extends PageParser {
         linkRepository.save(links);
         return deeplink;
 
+    }
+
+
+    private String convertDeeplinkToWebUrl(String uri) throws ResourceNotFoundException {
+        String webUrl;
+        Links links = new Links();
+
+        Pattern searchQuery = Pattern.compile(".*\\b(?:Page=Search&Query=)\\b(.+)");
+        Matcher matcher = searchQuery.matcher(uri);
+
+        if (!matcher.find()) {
+            throw new ResourceNotFoundException(uri + "search page query is not valid!");
+        }
+
+        Optional<Links> fourndWebUrl = Optional.ofNullable(linkRepository.findOneByDeeplink(uri));
+        if (fourndWebUrl.isPresent()) {
+            links.setDeeplink(fourndWebUrl.get().getWebUrl());
+            log.info("Search Page: Returns existing webUrl: {}", fourndWebUrl);
+            return links.getDeeplink();
+        }
+
+        webUrl = HOME_BLANK + SEARCH_QUERY + parseCharacter(matcher.group(1));
+
+        links.setDeeplink(uri);
+        links.setWebUrl(webUrl);
+        log.info("Search Page : Returns created webUrl: {}", links.getWebUrl());
+        linkRepository.save(links);
+        return webUrl;
     }
 }

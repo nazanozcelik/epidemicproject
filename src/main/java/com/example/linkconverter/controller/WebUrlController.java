@@ -15,25 +15,24 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URISyntaxException;
 
 /**
- * Deeplink Controller
+ * WebUrl Controller
  */
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1")
-public class DeeplinkController {
+public class WebUrlController {
 
     @Autowired
     private LinkRouter linkRouter;
 
-    @ApiOperation("Creates deeplink from given webUrl.")
-    @PostMapping(value = "/weburl-to-deeplink")
+    @ApiOperation("Creates webUrl from given deeplink.")
+    @PostMapping(value = "/deeplink-to-weburl")
     @ResponseStatus(HttpStatus.OK)
-    public DeeplinkDto createDeeplinkWithGivenWebUrl(
-            @Validated @RequestBody WebUrlDto webUrlDto) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
+    public WebUrlDto createWebUrlWithGivenDeeplink(
+            @Validated @RequestBody DeeplinkDto deeplinkDto) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
 
-        log.info("Creating deeplink from webUrl: {}", webUrlDto.getWebURL());
-        return linkRouter.convertWebUrlToDeeplink(webUrlDto);
+        log.info("Creating webUrl from deeplink: {}", deeplinkDto.getDeeplink());
+        return linkRouter.convertDeeplinkToWebUrl(deeplinkDto);
 
     }
-
 }

@@ -9,8 +9,8 @@ import java.net.URISyntaxException;
 
 public interface LinkConverter {
 
-    DeeplinkDto deeplinkConverter(WebUrlDto webUrlDto) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException;
+    DeeplinkDto convertWebUrlToDeeplink(WebUrlDto webUrlDto) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException;
 
-    WebUrlDto webUrlConverter(DeeplinkDto deeplinkDto);
+    WebUrlDto convertDeeplinkToWebUrl(DeeplinkDto deeplinkDto) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException;
 
 }

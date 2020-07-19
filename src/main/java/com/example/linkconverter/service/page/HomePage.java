@@ -24,26 +24,26 @@ public class HomePage extends PageParser {
     private LinkRepository linkRepository;
 
     Map<String, String> sectionMap = new HashMap<String, String>() {{
-        put("1", "Kadin");
-        put("2", "Erkek");
-        put("3", "Supermarket");
-        put("4", "Cocuk");
+        put("1", SECTION_WOMAN);
+        put("2", SECTION_MAN);
+        put("3", SECTION_SUPERMARKET);
+        put("4", SECTION_KID);
     }};
 
     @Override
     public String parseURI(String uri, LinkType linkType) throws ResourceNotFoundException, SectionNotFoundException {
 
         if (linkType == LinkType.WEBURL_TO_DEEPLINK) {
-            return this.webUrlToDeeplink(uri);
+            return convertWebUrlToDeeplink(uri);
         } else if (linkType == LinkType.DEEPLINK_TO_WEBURL) {
-            return "Deeplink!";
+            return convertDeeplinkToWebUrl(uri);
         } else {
             return "shortlink";
         }
     }
 
 
-    private String webUrlToDeeplink(String uri) throws ResourceNotFoundException, SectionNotFoundException {
+    private String convertWebUrlToDeeplink(String uri) throws ResourceNotFoundException, SectionNotFoundException {
 
         String deeplink;
 
@@ -82,8 +82,38 @@ public class HomePage extends PageParser {
 
     }
 
+    private String convertDeeplinkToWebUrl(String uri) throws ResourceNotFoundException, SectionNotFoundException {
+
+        String webUrl;
+
+        if (uri.matches("^\\b(ty:\\/\\/\\?)\\b(Page=)\\b(Home)$")) {
+            throw new ResourceNotFoundException(uri + "path doesn't have section id!");
+        } else {
+            Links links = new Links();
+
+            Optional<Links> foundWebUrl = Optional.ofNullable(linkRepository.findOneByDeeplink(uri));
+            if (foundWebUrl.isPresent()) {
+                links.setWebUrl(foundWebUrl.get().getWebUrl());
+
+                log.info("Home Page: Returns existing webUrl: {}", foundWebUrl);
+                return links.getWebUrl();
+            }
+
+            String sectionId = uri.substring(uri.indexOf("ty://?Page=Home&SectionId=") + "ty://?Page=Home&SectionId=".length());
+            String sectionName = sectionMap.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(parseCharacter(sectionId)))
+                    .findFirst().map(Map.Entry::getValue)
+                    .orElseThrow(() -> new SectionNotFoundException("Section has not a valid id!"));
+
+            webUrl = HOME_BLANK + HOME_LIST + "/" + sectionName;
+            links.setDeeplink(uri);
+            links.setWebUrl(webUrl);
+            log.info("Home Page: Returns created webUrl: {}", links.getWebUrl());
+            linkRepository.save(links);
+            return webUrl;
+        }
+
+    }
 }
-
-
-
 

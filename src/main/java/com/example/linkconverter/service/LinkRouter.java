@@ -14,18 +14,18 @@ import java.net.URISyntaxException;
 public class LinkRouter implements LinkConverter {
 
     @Autowired
-    private PageService pageService;
+    public PageService pageService;
 
     @Override
-    public DeeplinkDto deeplinkConverter(WebUrlDto url) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
-
+    public DeeplinkDto convertWebUrlToDeeplink(WebUrlDto url) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
         LinkBuilder linkBuilder = new LinkBuilder(pageService);
         return linkBuilder.createDeeplink(url.getWebURL());
     }
 
     @Override
-    public WebUrlDto webUrlConverter(DeeplinkDto url) {
-        return null;
+    public WebUrlDto convertDeeplinkToWebUrl(DeeplinkDto url) throws URISyntaxException, ResourceNotFoundException, SectionNotFoundException {
+        LinkBuilder linkBuilder = new LinkBuilder(pageService);
+        return linkBuilder.createWebUrl(url.getDeeplink());
     }
 
 }
