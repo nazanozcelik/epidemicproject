@@ -16,4 +16,5 @@ public class Constants {
     public static final String SECTION_ID = "&SectionId=";
     public static final String CONTENT_ID = "&ContentId=";
     public static final String QUERY = "&Query=";
+    public static final String SHORTLINK_PREFIX = "https://ty.gl/";
 }

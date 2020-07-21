@@ -1,7 +1,7 @@
 package com.example.linkconverter.service.page;
 
+import com.example.linkconverter.exception.LinkTypeNotFoundException;
 import com.example.linkconverter.exception.ResourceNotFoundException;
-import com.example.linkconverter.model.entity.Links;
 import com.example.linkconverter.repository.LinkRepository;
 import com.example.linkconverter.util.LinkType;
 import lombok.extern.slf4j.Slf4j;
@@ -28,32 +28,24 @@ public class ProductPage extends PageParser {
     private LinkRepository linkRepository;
 
     @Override
-    public String parseURI(String uri, LinkType linkType) throws ResourceNotFoundException, URISyntaxException {
+    public String parseURI(String uri, LinkType linkType) throws ResourceNotFoundException, URISyntaxException, LinkTypeNotFoundException {
         if (linkType == LinkType.WEBURL_TO_DEEPLINK) {
             return convertWebUrlToDeeplink(uri);
         } else if (linkType == LinkType.DEEPLINK_TO_WEBURL) {
             return convertDeeplinkToWebUrl(uri);
         } else {
-            return "shortlink";
+            throw new LinkTypeNotFoundException("Given link type is not valid! " + linkType);
         }
     }
 
     private String convertWebUrlToDeeplink(String uri) throws URISyntaxException, ResourceNotFoundException {
         String deeplink;
-        Links links = new Links();
 
         Pattern contentId = Pattern.compile(".*\\b(?:-p-)\\b(\\d+)");
         Matcher matcher = contentId.matcher(uri);
 
         if (!matcher.find()) {
             throw new ResourceNotFoundException(uri + " Doesn't have content id!");
-        }
-
-        Optional<Links> foundDeeplink = Optional.ofNullable(linkRepository.findOneByWebUrl(uri));
-        if (foundDeeplink.isPresent()) {
-            links.setDeeplink(foundDeeplink.get().getDeeplink());
-            log.info("Product Page: Returns existing deeplink: {}", foundDeeplink);
-            return links.getDeeplink();
         }
 
         deeplink = DEEP_LINK + DEEP_LINK_PRODUCT + CONTENT_ID + matcher.group(1);
@@ -81,10 +73,7 @@ public class ProductPage extends PageParser {
             }
         }
 
-        links.setWebUrl(uri);
-        links.setDeeplink(deeplink);
-        log.info("Product Page : Returns created deeplink: {}", links.getDeeplink());
-        linkRepository.save(links);
+        log.info("Product Page : Returns created deeplink: {}", deeplink);
         return deeplink;
 
     }
@@ -92,20 +81,12 @@ public class ProductPage extends PageParser {
     private String convertDeeplinkToWebUrl(String uri) throws URISyntaxException, ResourceNotFoundException {
 
         String webUrl;
-        Links links = new Links();
 
         Pattern contentId = Pattern.compile(".*\\b(?:Page=Product&ContentId=)\\b(\\d+)");
         Matcher matcher = contentId.matcher(uri);
 
         if (!matcher.find()) {
             throw new ResourceNotFoundException(uri + " Doesn't have content id!");
-        }
-
-        Optional<Links> foundWebUrl = Optional.ofNullable(linkRepository.findOneByDeeplink(uri));
-        if (foundWebUrl.isPresent()) {
-            links.setWebUrl(foundWebUrl.get().getWebUrl());
-            log.info("Product Page: Returns existing webUrl: {}", foundWebUrl);
-            return links.getWebUrl();
         }
 
         webUrl = HOME_BLANK + PRODUCT_BRAND + matcher.group(1);
@@ -137,10 +118,7 @@ public class ProductPage extends PageParser {
             }
         }
 
-        links.setDeeplink(uri);
-        links.setWebUrl(webUrl);
-        log.info("Product Page : Returns created webUrl: {}", links.getWebUrl());
-        linkRepository.save(links);
+        log.info("Product Page : Returns created webUrl: {}", webUrl);
         return webUrl;
     }
 }

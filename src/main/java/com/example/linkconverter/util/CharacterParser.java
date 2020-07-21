@@ -1,5 +1,8 @@
 package com.example.linkconverter.util;
 
+/**
+ * Converts turkish characters to latin characters
+ */
 public class CharacterParser {
     public static String parseCharacter(String str) {
 

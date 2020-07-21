@@ -1,5 +1,6 @@
 package service;
 
+import com.example.linkconverter.exception.LinkTypeNotFoundException;
 import com.example.linkconverter.exception.ResourceNotFoundException;
 import com.example.linkconverter.exception.SectionNotFoundException;
 import com.example.linkconverter.repository.LinkRepository;
@@ -29,44 +30,44 @@ public class HomePageTest {
     }
 
     @Test
-    public void shouldCreateBlankHomePageDeeplinkWithGivenHostWebUrl() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldCreateBlankHomePageDeeplinkWithGivenHostWebUrl() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         String deeplink = underTest.parseURI(HOME_BLANK, LinkType.WEBURL_TO_DEEPLINK);
         Assert.assertEquals(DEEPLINK_HOME, deeplink);
     }
 
 
     @Test
-    public void shouldCreateValidSectionPageWithValidSectionWebUrl() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldCreateValidSectionPageWithValidSectionWebUrl() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         String deeplink = underTest.parseURI(HOME_LIST_SECTION, LinkType.WEBURL_TO_DEEPLINK);
         Assert.assertEquals(DEEPLINK_SECTION, deeplink);
     }
 
     @Test
-    public void shouldCreateValidSectionPageWithGivenTurkishCharacterValidSectionWebUrl() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldCreateValidSectionPageWithGivenTurkishCharacterValidSectionWebUrl() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         String deeplink = underTest.parseURI("https://www.trendyol.com/butik/liste/ÇOCUK", LinkType.WEBURL_TO_DEEPLINK);
         Assert.assertEquals(DEEPLINK_SECTION, deeplink);
     }
 
     @Test
-    public void shouldCreateValidSectionPageWithGivenExistingDeeplinkSectionId() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldCreateValidSectionPageWithGivenExistingDeeplinkSectionId() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         String webUrl = underTest.parseURI(DEEPLINK_SECTION, LinkType.DEEPLINK_TO_WEBURL);
         Assert.assertEquals(HOME_LIST_SECTION, webUrl);
     }
 
 
     @Test(expectedExceptions = SectionNotFoundException.class)
-    public void shouldThrowSectionNotFoundExceptionWhenSectionIsNotValid() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldThrowSectionNotFoundExceptionWhenSectionIsNotValid() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         underTest.parseURI("https://www.trendyol.com/butik/liste/erkekbolumu", LinkType.WEBURL_TO_DEEPLINK);
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
-    public void shouldThrowResourceNotFoundExceptionWhenSectionNameIsNotExist() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldThrowResourceNotFoundExceptionWhenSectionNameIsNotExist() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         underTest.parseURI("https://www.trendyol.com/butik/liste", LinkType.WEBURL_TO_DEEPLINK);
     }
 
 
     @Test(expectedExceptions = SectionNotFoundException.class)
-    public void shouldThrowSectionNotFoundExceptionWhenSectionIdNotValid() throws ResourceNotFoundException, SectionNotFoundException {
+    public void shouldThrowSectionNotFoundExceptionWhenSectionIdNotValid() throws ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         underTest.parseURI("ty://?Page=Home&SectionId=9", LinkType.DEEPLINK_TO_WEBURL);
     }
 

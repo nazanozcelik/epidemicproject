@@ -2,10 +2,10 @@ package com.example.linkconverter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication(scanBasePackages = {"com.example.linkconverter"})
-@EnableSwagger2
+@EnableRetry
 public class LinkConverterApplication {
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.example.linkconverter.service;
 
+import com.example.linkconverter.exception.LinkTypeNotFoundException;
 import com.example.linkconverter.exception.ResourceNotFoundException;
 import com.example.linkconverter.exception.SectionNotFoundException;
 import com.example.linkconverter.model.dto.DeeplinkDto;
@@ -17,13 +18,13 @@ public class LinkRouter implements LinkConverter {
     public PageService pageService;
 
     @Override
-    public DeeplinkDto convertWebUrlToDeeplink(WebUrlDto url) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
+    public DeeplinkDto convertWebUrlToDeeplink(WebUrlDto url) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException, LinkTypeNotFoundException {
         LinkBuilder linkBuilder = new LinkBuilder(pageService);
         return linkBuilder.createDeeplink(url.getWebURL());
     }
 
     @Override
-    public WebUrlDto convertDeeplinkToWebUrl(DeeplinkDto url) throws URISyntaxException, ResourceNotFoundException, SectionNotFoundException {
+    public WebUrlDto convertDeeplinkToWebUrl(DeeplinkDto url) throws URISyntaxException, ResourceNotFoundException, SectionNotFoundException, LinkTypeNotFoundException {
         LinkBuilder linkBuilder = new LinkBuilder(pageService);
         return linkBuilder.createWebUrl(url.getDeeplink());
     }

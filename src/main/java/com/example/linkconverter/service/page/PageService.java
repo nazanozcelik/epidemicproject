@@ -1,5 +1,6 @@
 package com.example.linkconverter.service.page;
 
+import com.example.linkconverter.exception.LinkTypeNotFoundException;
 import com.example.linkconverter.exception.ResourceNotFoundException;
 import com.example.linkconverter.exception.SectionNotFoundException;
 import com.example.linkconverter.util.LinkType;
@@ -13,6 +14,9 @@ import static com.example.linkconverter.util.Constants.*;
 import static com.example.linkconverter.util.LinkType.DEEPLINK_TO_WEBURL;
 import static com.example.linkconverter.util.LinkType.WEBURL_TO_DEEPLINK;
 
+/**
+ * Service that routes links to related pages
+ */
 @Slf4j
 @Service
 public class PageService implements PageRouter {
@@ -27,13 +31,13 @@ public class PageService implements PageRouter {
     private SearchPage searchPage;
 
     @Override
-    public String routePage(String uri, LinkType linkType) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException {
+    public String routePage(String uri, LinkType linkType) throws ResourceNotFoundException, SectionNotFoundException, URISyntaxException, LinkTypeNotFoundException {
 
         log.info("Routing given link to related pages with given link type: {}, {}", uri, linkType);
 
         if (linkType == WEBURL_TO_DEEPLINK) {
 
-            if (!uri.matches("^(https:\\/\\/\\www.trendyol.com)\\b(.+)")) {
+            if (!uri.matches("(?!.https:\\/\\/\\www.trendyol.com)(?=https:\\/\\/\\www.trendyol.com)(.+)$")) {
                 throw new ResourceNotFoundException("WebUrl host name doesn't contain wwww.trendyol.com! " + uri);
             }
 
@@ -60,7 +64,7 @@ public class PageService implements PageRouter {
             }
 
         } else {
-            return "shortlink";
+            throw new LinkTypeNotFoundException("Given link type is not valid! " + linkType);
         }
     }
 }

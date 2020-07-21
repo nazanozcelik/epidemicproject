@@ -1,5 +1,6 @@
 package service;
 
+import com.example.linkconverter.exception.LinkTypeNotFoundException;
 import com.example.linkconverter.exception.ResourceNotFoundException;
 import com.example.linkconverter.repository.LinkRepository;
 import com.example.linkconverter.service.page.SearchPage;
@@ -29,24 +30,24 @@ public class SearchPageTest {
     }
 
     @Test
-    public void shouldCreateValidSearchPageByGivenWebUrlWithValidQuery() throws ResourceNotFoundException {
+    public void shouldCreateValidSearchPageByGivenWebUrlWithValidQuery() throws ResourceNotFoundException, LinkTypeNotFoundException {
         String deeplink = underTest.parseURI(SEARCH_PAGE, LinkType.WEBURL_TO_DEEPLINK);
         Assert.assertEquals(DEEPLINK_SEARCH, deeplink);
     }
 
     @Test
-    public void shouldCreateValidSearchPageByGivenDeeplikWithValidQuery() throws ResourceNotFoundException {
+    public void shouldCreateValidSearchPageByGivenDeeplikWithValidQuery() throws ResourceNotFoundException, LinkTypeNotFoundException {
         String webUrl = underTest.parseURI(DEEPLINK_SEARCH, LinkType.DEEPLINK_TO_WEBURL);
         Assert.assertEquals(SEARCH_PAGE, webUrl);
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
-    public void shouldThrowResourceNotFoundExceptionWithGivenWebUrWhenSearchQueryIsNotExist() throws ResourceNotFoundException {
+    public void shouldThrowResourceNotFoundExceptionWithGivenWebUrWhenSearchQueryIsNotExist() throws ResourceNotFoundException, LinkTypeNotFoundException {
         underTest.parseURI("\"https://www.trendyol.com/tum--urunler?q", LinkType.WEBURL_TO_DEEPLINK);
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
-    public void shouldThrowResourceNotFoundExceptionWithGivenDeeplinkWhenSearchQueryIsNotExist() throws ResourceNotFoundException {
+    public void shouldThrowResourceNotFoundExceptionWithGivenDeeplinkWhenSearchQueryIsNotExist() throws ResourceNotFoundException, LinkTypeNotFoundException {
         underTest.parseURI("ty://?Page=Search&Query=", LinkType.DEEPLINK_TO_WEBURL);
     }
 

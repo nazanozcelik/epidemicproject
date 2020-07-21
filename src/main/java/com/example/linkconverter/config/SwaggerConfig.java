@@ -25,13 +25,14 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
+                .pathMapping("/")
                 .apiInfo(metaData());
     }
 
     private ApiInfo metaData() {
         return new ApiInfo(
                 "Trendyol Link Converter REST API",
-                "Converts webUrl to deeplinck and vice versa",
+                "Generates web URL, deeplink and shortlink from given URL",
                 "1.0",
                 "Terms of service",
                 new Contact("Nazan Ozcelik", "", "nazanozcelik@hotmail.com"),

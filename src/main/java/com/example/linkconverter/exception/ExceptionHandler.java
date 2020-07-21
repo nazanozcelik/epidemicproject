@@ -23,4 +23,20 @@ public class ExceptionHandler {
         error.setStatus((HttpStatus.NOT_FOUND.value()));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ShortlinkNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleShortlinkNotFoundException(ShortlinkNotFoundException e) {
+        ErrorResponse error = new ErrorResponse("NOT_FOUND_ERROR", e.getMessage());
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatus((HttpStatus.NOT_FOUND.value()));
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(LinkTypeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleLinkTypeNotFoundException(LinkTypeNotFoundException e) {
+        ErrorResponse error = new ErrorResponse("NOT_FOUND_ERROR", e.getMessage());
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatus((HttpStatus.NOT_FOUND.value()));
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }

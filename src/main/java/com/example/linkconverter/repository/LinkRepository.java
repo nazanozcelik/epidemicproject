@@ -10,6 +10,8 @@ public interface LinkRepository extends JpaRepository<Links, String> {
     Links findOneByWebUrl(String webUrl);
 
     Links findOneByDeeplink(String deeplink);
+
+    Links findOneByShortlink(String shortlink);
 }
 
 
