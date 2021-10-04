@@ -1,11 +1,11 @@
-# Trendyol Link Converter
+# Link Converter
 
-Trendyol Link Converter is a `RESTful Web API` that allows others to convert Trendyol.com links between mobile and web applications.
-Web apps use **URLs** and mobile apps use **deeplinks**. Both apps use links to redirect specific locations inside the apps.
-Both web URL ad deeplink are related with another tiny link called shortlink.
+Link Converter is a `RESTful Web API` that allows us to convert web URL such as mydomain.com/boutique/woman to mobile links (deeplinks) and deeplinks to web URLs.
+Web apps use **URLs** and mobile apps use **deeplinks**. Both apps use links to redirect specific page locations inside the apps.
+Both web URL and deeplink generates a tiny link called shortlink that matches the same reference for both of them. This provides us to retrieve the deeplinks or web URLs if they've been already created before without creating them again.
 
 Example converted links to each other:            
-**Web URL:** "https://www.trendyol.com/butik/liste/kadın"   
+**Web URL:** "https://www.mydomain.com/butik/liste/kadın"   
 **Deeplink:** "ty://?Page=Home&SectionId=1"                             
 **Shortlink:** "https://ty.gl/shortlink"
 
@@ -77,10 +77,4 @@ To run the spring boot project without docker:
 mvn spring-boot:run
 ```
 You may encounter PostgreSQL connection problem from localhost, change host.docker.internal to localhost at application.properties and create the link-converter db from [pgAdmin](https://www.pgadmin.org/download/)
-
-
-## Contact
-
-Nazan Özçelik: you can reach me at nazanozcelik@hotmail.com and [LinkedIn](linkedin.com/in/nazanozcelik)
-
 
